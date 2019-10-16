@@ -1,0 +1,54 @@
+{
+  "name": "bigfloat-esnext",
+  "description": "A library for arbitrary precision floating point arithmetic.",
+  "main": "lib/mod.js",
+  "types": "lib/mod.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "bigfloat",
+    "float",
+    "decimal",
+    "bigdecimal",
+    "number",
+    "math",
+    "arithmetic",
+    "floating point",
+    "point",
+    "mathematics",
+    "calculator",
+    "precision",
+    "decimal float",
+    "big integer",
+    "typescript",
+    "bigfloat-ts",
+    "bigfloat-esnext",
+    "decimal.js",
+    "node"
+  ],
+  "author": "David Martínez",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmartinez10/bigfloat-esnext.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidmartinez10/bigfloat-esnext/issues"
+  },
+  "homepage": "https://github.com/davidmartinez10/bigfloat-esnext#readme",
+  "devDependencies": {
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4"
+  },
+  "files": [
+    "lib/**/*"
+  ]
+}
