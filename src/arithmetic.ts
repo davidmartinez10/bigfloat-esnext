@@ -67,7 +67,7 @@ export function div(
   }
 
   if (exponent > precision) {
-    coefficient = coefficient ** (BIGINT_TEN ** BigInt(exponent - precision));
+    coefficient = coefficient * BIGINT_TEN ** BigInt(exponent - precision);
     exponent = precision;
   }
 

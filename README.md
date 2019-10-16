@@ -3,7 +3,7 @@ A library for arbitrary precision decimal floating point arithmetic that can exa
 unlike JavaScript's number data type which is 64-bit binary floating point.
 
 Based on the original work by Douglas Crockford.
-This implementation is built upon the Google Chrome Labs' implementation of ECMAScript big integers: JSBI.
+This implementation is built upon ES native bigints.
 
 ```javascript
 0.1 + 0.2 === 0.3;                     // false
@@ -38,7 +38,9 @@ new Decimal("2").sqrt().toString() // "1.414213562373095048801688"
 ```
 - [bigfloat.js](#bigfloatjs)
 - [Installation](#installation)
+- [Importing the bigfloat module](#importing-the-bigfloat-module)
 - [The bigfloat object](#the-bigfloat-object)
+- [Change precision](#change-precision)
 - [evaluate(expression, precision)](#evaluateexpression-precision)
 - [make(number)](#makenumber)
 - [string(bigfloat)](#stringbigfloat)
@@ -65,7 +67,7 @@ import bigfloat, { Decimal } from "bigfloat.js";
 # The bigfloat object
 ```typescript
 interface BigFloat {
-  coefficient: JSBI;
+  coefficient: bigint;
   exponent: number;
 }
 ```
@@ -78,6 +80,19 @@ interface BigFloat {
 The coefficient is a bigint that contains all of the digits that make up the number.
 The exponent is a number that indicates where to place the decimal point.
 This bigfloat object represents the decimal value 52.2299
+
+# Change precision
+This function only takes negative integers. The default precision is -4.
+```typescript
+bigfloat.string(bigfloat.sqrt(BigFloat("2"))); // 1.4142
+bigfloat.set_precision(-10);
+bigfloat.string(bigfloat.sqrt(BigFloat("2"))); // 1.4142135623
+``` 
+```typescript
+new Decimal(2).sqrt().toString(); // 1.4142
+new Decimal().setPrecision(-10);
+new Decimal(2).sqrt().toString(); // 1.4142135623
+``` 
 
 # evaluate(expression, precision)
 This function takes an expression in string form, and a negative integer for precision (default is -24) and returns a string:
@@ -98,11 +113,11 @@ The tokens that make up the expression can be:
 
 It would be nice to have a transpiler that replaces JavaScript numbers and operators for bigfloat function calls, but it seemed to me very convenient to have this functionality available at runtime.
 
-# make(number)
+# BigFloat(number) / make(number)
 This function takes a number in a string or number form and returns a bigfloat object.
 ```javascript
 BigFloat(53.23);   // { coefficient: BigInt(522299), exponent: -4 }
-BigFloat("12000"); // { coefficient: BigInt(12000), exponent: 0 }
+make("12000"); // { coefficient: BigInt(12000), exponent: 0 }
 ```
 
 # string(bigfloat)
