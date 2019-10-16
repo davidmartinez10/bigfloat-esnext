@@ -127,20 +127,5 @@ bigfloat.string({ coefficient: 522299n, exponent: -4 }); // "53.23"
 ```
 
 # Changelog
-2.0.0
-- TS rewrite.
-- Added an exported Decimal class.
-- Improved browser and legacy Node.js versions compatibility.
-
-1.1.8
-- Exponentiation operators(^, **) are now right-associative.
-
-1.1.9
-- Added a sqrt() function.
-
-1.1.10
-- Added an exponentiation() function.
-- Exponentiation operations now support non-integer exponents.
-
-1.2.0
-- Added support for Node >= 7.0.0 and most web browsers.
+0.0.1
+- First version
