@@ -127,5 +127,5 @@ bigfloat.string({ coefficient: BigInt(522299), exponent: -4 }); // "53.23"
 ```
 
 # Changelog
-0.0.1
+1.0.0
 - First version
