@@ -123,7 +123,7 @@ make("12000"); // { coefficient: BigInt(12000), exponent: 0 }
 # string(bigfloat)
 This function takes a bigfloat object and returns a string containing the decimal representation of the number. The conversion is exact.
 ```javascript
-bigfloat.string({ coefficient: 522299n, exponent: -4 }); // "53.23"
+bigfloat.string({ coefficient: BigInt(522299), exponent: -4 }); // "53.23"
 ```
 
 # Changelog
