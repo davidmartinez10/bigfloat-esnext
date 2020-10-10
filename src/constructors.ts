@@ -16,7 +16,7 @@ export function make_big_float(
   return Object.freeze(new_big_float);
 }
 
-export function number(a: NumericValue) {
+export function number(a: NumericValue): number {
   if (typeof a !== "number" && typeof a !== "string") {
     if (typeof a === "bigint") {
       return Number(a);
@@ -29,7 +29,7 @@ export function number(a: NumericValue) {
   return Number(a);
 }
 
-export function normalize(a: BigFloat) {
+export function normalize(a: BigFloat): BigFloat {
   let { coefficient, exponent } = a;
 
   // If the exponent is zero, it is already normal.
@@ -65,7 +65,7 @@ export function normalize(a: BigFloat) {
   return make_big_float(coefficient, exponent);
 }
 
-export function integer(a: BigFloat) {
+export function integer(a: BigFloat): BigFloat {
   // The integer function is like the normalize function except that it throws
   // away significance. It discards the digits after the decimal point.
 
@@ -90,7 +90,7 @@ export function integer(a: BigFloat) {
   return make_big_float(coefficient / BIGINT_TEN ** BigInt(-exponent), 0);
 }
 
-export function fraction(a: BigFloat) {
+export function fraction(a: BigFloat): BigFloat {
   return sub(a, integer(a));
 }
 
@@ -122,7 +122,7 @@ export function make(a: NumericValue, b?: number | string): BigFloat {
   return ZERO;
 }
 
-export function string(a: BigFloat, radix?: BigFloat) {
+export function string(a: BigFloat, radix?: BigFloat): string | undefined {
   if (is_zero(a)) {
     return "0";
   }
@@ -135,8 +135,8 @@ export function string(a: BigFloat, radix?: BigFloat) {
   a = normalize(a);
   let s = (
     is_negative(a)
-    ? -a.coefficient
-    : a.coefficient
+      ? -a.coefficient
+      : a.coefficient
   ).toString();
   if (a.exponent < 0) {
     let point = s.length + a.exponent;
@@ -154,7 +154,7 @@ export function string(a: BigFloat, radix?: BigFloat) {
   return s;
 }
 
-export function scientific(a: BigFloat) {
+export function scientific(a: BigFloat): string {
   if (is_zero(a)) {
     return "0";
   }

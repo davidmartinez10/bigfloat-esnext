@@ -8,12 +8,18 @@ import * as relational from "./relational";
 export { Decimal } from "./decimal";
 export { BigFloat } from "./types";
 
-export default Object.freeze({
+const bigfloat = Object.freeze({
   BigFloat: constructors.make,
   evaluate,
   set_precision,
   ...arithmetic,
   ...predicates,
   ...constructors,
-  ...relational,
+  ...relational
 });
+
+if (typeof module === "object") {
+  module.exports = bigfloat;
+}
+
+export default bigfloat;

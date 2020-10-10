@@ -12,7 +12,7 @@ Object.freeze(ZERO);
 
 export let PRECISION = -4;
 
-export function set_precision(n: number) {
+export function set_precision(n: number): void {
   n = Number(n);
   if (!Number.isInteger(n) || Number(n) >= 0) {
     throw Error("Only negative integers are allowed for precision.");
