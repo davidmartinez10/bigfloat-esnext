@@ -1,8 +1,8 @@
-import { add, div, exponentiation, mul, sub } from "./arithmetic";
-import { PRECISION, ZERO } from "./constants";
-import { make, normalize, string } from "./constructors";
-import { is_number, is_zero } from "./predicates";
-import { eq, gt, lt } from "./relational";
+import { add, div, exponentiation, mul, sub } from "./arithmetic.js";
+import { PRECISION, ZERO } from "./constants.js";
+import { make, normalize, string } from "./constructors.js";
+import { is_number, is_zero } from "./predicates.js";
+import { eq, gt, lt } from "./relational.js";
 import { BigFloat, TokenArray } from "./types";
 
 export default function evaluate(source: string, precision = PRECISION): string | boolean {

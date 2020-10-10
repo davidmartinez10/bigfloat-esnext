@@ -1,9 +1,9 @@
-import { BIGINT_ZERO } from "./constants";
-import { integer } from "./constructors";
-import { eq } from "./relational";
-import { BigFloat } from "./types";
+import { BIGINT_ZERO } from "./constants.js";
+import { integer } from "./constructors.js";
+import { eq } from "./relational.js";
+import { BigFloat, NumericValue } from "./types";
 
-export function is_big_float(big: any): boolean {
+export function is_big_float(big: NumericValue): boolean {
   return (
     typeof big === "object" &&
     typeof big.coefficient === "bigint" &&

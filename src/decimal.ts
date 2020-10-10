@@ -1,15 +1,13 @@
-import { abs, add, ceil, div, exponentiation, floor, mul, neg, sqrt, sub } from "./arithmetic";
-import { set_precision } from "./constants";
-import { make, string } from "./constructors";
-import { is_integer, is_negative, is_positive, is_zero } from "./predicates";
-import { eq, gt, gte, lt, lte } from "./relational";
+import { abs, add, ceil, div, exponentiation, floor, mul, neg, sqrt, sub } from "./arithmetic.js";
+import { make, string } from "./constructors.js";
+import { is_integer, is_negative, is_positive, is_zero } from "./predicates.js";
+import { eq, gt, gte, lt, lte } from "./relational.js";
 import { BigFloat, NumericValue } from "./types";
 
 // eslint-disable-next-line no-restricted-syntax
 export class Decimal implements BigFloat {
   public exponent: number;
   public coefficient: bigint;
-  public setPrecision = set_precision;
   constructor(n: NumericValue) {
     const { exponent, coefficient } = make(n);
     this.exponent = exponent;

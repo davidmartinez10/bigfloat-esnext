@@ -1,4 +1,4 @@
-import { make } from "./constructors";
+import { make } from "./constructors.js";
 import { BigFloat } from "./types";
 
 export const BIGINT_ZERO = BigInt("0");

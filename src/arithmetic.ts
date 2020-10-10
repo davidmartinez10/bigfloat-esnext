@@ -6,10 +6,10 @@ import {
   PRECISION,
   TWO,
   ZERO
-} from "./constants";
-import { integer, make_big_float, number } from "./constructors";
-import { is_integer, is_negative, is_zero } from "./predicates";
-import { eq, gt, lt } from "./relational";
+} from "./constants.js";
+import { integer, make_big_float, number } from "./constructors.js";
+import { is_integer, is_negative, is_zero } from "./predicates.js";
+import { eq, gt, lt } from "./relational.js";
 import { BigFloat } from "./types";
 
 export function neg(a: BigFloat): BigFloat {

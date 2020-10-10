@@ -1,5 +1,5 @@
-import { sub } from "./arithmetic";
-import { is_negative, is_zero } from "./predicates";
+import { sub } from "./arithmetic.js";
+import { is_negative, is_zero } from "./predicates.js";
 import { BigFloat } from "./types";
 
 export function eq(comparahend: BigFloat, comparator: BigFloat): boolean {

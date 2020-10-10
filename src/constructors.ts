@@ -1,6 +1,6 @@
-import { sub } from "./arithmetic";
-import { BIGINT_TEN, BIGINT_TEN_MILLION, BIGINT_ZERO, ZERO } from "./constants";
-import { is_big_float, is_negative, is_zero } from "./predicates";
+import { sub } from "./arithmetic.js";
+import { BIGINT_TEN, BIGINT_TEN_MILLION, BIGINT_ZERO, ZERO } from "./constants.js";
+import { is_big_float, is_negative, is_zero } from "./predicates.js";
 import { BigFloat, NumericValue } from "./types";
 
 export function make_big_float(
