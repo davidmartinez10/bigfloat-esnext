@@ -1,10 +1,10 @@
-export interface BigFloat {
+export interface IBigFloat {
   coefficient: bigint;
   exponent: number;
 }
 
-export type NumericValue = string | number | BigFloat | bigint;
+export type NumericValue = string | number | IBigFloat | bigint;
 
 export type TokenArray = Array<
-  { type: string; value: string | BigFloat } | { type: string; value: boolean }
+  { type: string; value: string | IBigFloat } | { type: string; value: boolean }
 >;

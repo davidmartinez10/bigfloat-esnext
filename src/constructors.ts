@@ -1,16 +1,16 @@
 import { sub } from "./arithmetic.js";
 import { BIGINT_TEN, BIGINT_TEN_MILLION, BIGINT_ZERO, ZERO } from "./constants.js";
 import { is_big_float, is_negative, is_zero } from "./predicates.js";
-import { BigFloat, NumericValue } from "./types";
+import { IBigFloat, NumericValue } from "./types";
 
 export function make_big_float(
   coefficient: bigint,
   exponent: number
-): BigFloat {
+): IBigFloat {
   if (coefficient === BIGINT_ZERO) {
     return ZERO;
   }
-  const new_big_float: BigFloat = Object.create(null);
+  const new_big_float: IBigFloat = Object.create(null);
   new_big_float.coefficient = coefficient;
   new_big_float.exponent = exponent;
   return Object.freeze(new_big_float);
@@ -29,7 +29,7 @@ export function number(a: NumericValue): number {
   return Number(a);
 }
 
-export function normalize(a: BigFloat): BigFloat {
+export function normalize(a: IBigFloat): IBigFloat {
   let { coefficient, exponent } = a;
 
   // If the exponent is zero, it is already normal.
@@ -65,7 +65,7 @@ export function normalize(a: BigFloat): BigFloat {
   return make_big_float(coefficient, exponent);
 }
 
-export function integer(a: BigFloat): BigFloat {
+export function integer(a: IBigFloat): IBigFloat {
   // The integer function is like the normalize function except that it throws
   // away significance. It discards the digits after the decimal point.
 
@@ -90,11 +90,11 @@ export function integer(a: BigFloat): BigFloat {
   return make_big_float(coefficient / BIGINT_TEN ** BigInt(-exponent), 0);
 }
 
-export function fraction(a: BigFloat): BigFloat {
+export function fraction(a: IBigFloat): IBigFloat {
   return sub(a, integer(a));
 }
 
-export function make(a: NumericValue, b?: number | string): BigFloat {
+export function make(a: NumericValue, b?: number | string): IBigFloat {
   const number_pattern = /^(-?\d+)(?:\.(\d*))?(?:e(-?\d+))?$/;
 
   // . Capturing groups
@@ -122,7 +122,7 @@ export function make(a: NumericValue, b?: number | string): BigFloat {
   return ZERO;
 }
 
-export function string(a: BigFloat, radix?: BigFloat): string | undefined {
+export function string(a: IBigFloat, radix?: IBigFloat): string | undefined {
   if (is_zero(a)) {
     return "0";
   }
@@ -154,7 +154,7 @@ export function string(a: BigFloat, radix?: BigFloat): string | undefined {
   return s;
 }
 
-export function scientific(a: BigFloat): string {
+export function scientific(a: IBigFloat): string {
   if (is_zero(a)) {
     return "0";
   }

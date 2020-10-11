@@ -32,7 +32,7 @@ module.exports = {
       "error",
       "always"
     ],
-    "no-restricted-syntax": [2, "ClassDeclaration"],
+    // "no-restricted-syntax": [2, "ClassDeclaration"],
     "comma-dangle": [2, "never"],
     curly: [2, "all"],
     "func-style": ["error", "declaration", { allowArrowFunctions: false }],

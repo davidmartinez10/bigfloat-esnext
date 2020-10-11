@@ -2,10 +2,9 @@ import { abs, add, ceil, div, exponentiation, floor, mul, neg, sqrt, sub } from 
 import { make, string } from "./constructors.js";
 import { is_integer, is_negative, is_positive, is_zero } from "./predicates.js";
 import { eq, gt, gte, lt, lte } from "./relational.js";
-import { BigFloat, NumericValue } from "./types";
+import { IBigFloat, NumericValue } from "./types";
 
-// eslint-disable-next-line no-restricted-syntax
-export class Decimal implements BigFloat {
+export class BigFloat implements IBigFloat {
   public exponent: number;
   public coefficient: bigint;
   constructor(n: NumericValue) {
@@ -25,16 +24,16 @@ export class Decimal implements BigFloat {
   public greaterThanOrEqualTo(y: NumericValue): boolean { return gte(this, make(y)); }
   public lessThan(y: NumericValue): boolean { return lt(this, make(y)); }
   public lessThanOrEqualTo(y: NumericValue): boolean { return lte(this, make(y)); }
-  public absoluteValue(): Decimal { return new Decimal(abs(this)); }
-  public negated(): Decimal { return new Decimal(neg(this)); }
-  public squareRoot(): Decimal { return new Decimal(sqrt(this)); }
-  public dividedBy(y: NumericValue): Decimal { return new Decimal(div(this, make(y))); }
-  public minus(y: NumericValue): Decimal { return new Decimal(sub(this, make(y))); }
-  public plus(y: NumericValue): Decimal { return new Decimal(add(this, make(y))); }
-  public times(y: NumericValue): Decimal { return new Decimal(mul(this, make(y))); }
-  public toPower(y: NumericValue): Decimal { return new Decimal(exponentiation(this, make(y))); }
-  public ceil(): Decimal { return new Decimal(ceil(this)); }
-  public floor(): Decimal { return new Decimal(floor(this)); }
+  public absoluteValue(): BigFloat { return new BigFloat(abs(this)); }
+  public negated(): BigFloat { return new BigFloat(neg(this)); }
+  public squareRoot(): BigFloat { return new BigFloat(sqrt(this)); }
+  public dividedBy(y: NumericValue): BigFloat { return new BigFloat(div(this, make(y))); }
+  public minus(y: NumericValue): BigFloat { return new BigFloat(sub(this, make(y))); }
+  public plus(y: NumericValue): BigFloat { return new BigFloat(add(this, make(y))); }
+  public times(y: NumericValue): BigFloat { return new BigFloat(mul(this, make(y))); }
+  public toPower(y: NumericValue): BigFloat { return new BigFloat(exponentiation(this, make(y))); }
+  public ceil(): BigFloat { return new BigFloat(ceil(this)); }
+  public floor(): BigFloat { return new BigFloat(floor(this)); }
 
   public dp = this.decimalPlaces;
   public isNeg = this.isNegative;

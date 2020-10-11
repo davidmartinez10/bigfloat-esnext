@@ -23,10 +23,10 @@ bigfloat.evaluate("1 + 2.220446049250313e-16"); // "1.00000000000000022204460492
 
 This library provides a set of functions for basic operations, and an evaluate() function that makes bigfloat operations behind the scenes. The first operation shown above can also be performed by making use of the other provided functions like this:
 ```javascript
-const { eq, add, BigFloat } = bigfloat;
+const { eq, add, make } = bigfloat;
 eq(
-  add(BigFloat("0.1"), BigFloat("0.2")),
-  BigFloat("0.3")
+  add(make("0.1"), make("0.2")),
+  make("0.3")
 ); // true
 ```
 
@@ -40,12 +40,10 @@ new Decimal("2").sqrt().toString() // "1.4142"
 - [Installation](#installation)
 - [Importing the bigfloat module](#importing-the-bigfloat-module)
 - [The bigfloat object](#the-bigfloat-object)
-- [set_precision(negative_int)](#set_precision(negative_int))
+- [set_precision(negative_int)](#set_precisionnegative_int)
 - [evaluate(expression, precision)](#evaluateexpression-precision)
-- [bigfloat(number) / make(number)](#makenumber)
+- [BigFloat(number) / make(number)](#bigfloatnumber--makenumber)
 - [string(bigfloat)](#stringbigfloat)
-- [Other useful functions](#other-useful-functions)
-- [Changelog](#changelog)
 
 # Installation
 ```bash
@@ -122,15 +120,3 @@ This function takes a bigfloat object and returns a string containing the decima
 ```javascript
 bigfloat.string({ coefficient: BigInt(5323), exponent: -2 }); // "53.23"
 ```
-
-# Changelog
-1.0.3
-- Remove unnecesary bundling options
-- Fixed some types
-
-1.0.1
-- Add bundler for unpkg.
-- Edit README.MD
-
-1.0.0
-- First version

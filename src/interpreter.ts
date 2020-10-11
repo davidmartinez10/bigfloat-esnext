@@ -3,7 +3,7 @@ import { PRECISION, ZERO } from "./constants.js";
 import { make, normalize, string } from "./constructors.js";
 import { is_number, is_zero } from "./predicates.js";
 import { eq, gt, lt } from "./relational.js";
-import { BigFloat, TokenArray } from "./types";
+import { IBigFloat, TokenArray } from "./types";
 
 export default function evaluate(source: string, precision = PRECISION): string | boolean {
   if (typeof source !== "string") {
@@ -75,8 +75,7 @@ export default function evaluate(source: string, precision = PRECISION): string 
         value: normalize(make(element.replace("+", "")))
       };
     }
-    const error = `Unexpected token "${element}"`;
-    throw Error(error);
+    throw Error(`Unexpected token "${element}"`);
   });
 
   let n = 0;
@@ -130,8 +129,8 @@ export default function evaluate(source: string, precision = PRECISION): string 
               : i,
             arr.length
           );
-          const a = ops[0].value as BigFloat;
-          const b = ops[2].value as BigFloat;
+          const a = ops[0].value as IBigFloat;
+          const b = ops[2].value as IBigFloat;
           const operator = ops[1].value as string;
 
           const bigfloat_return = ({
@@ -150,7 +149,7 @@ export default function evaluate(source: string, precision = PRECISION): string 
             "**"() {
               return exponentiation(a, b);
             }
-          } as { [key: string]: () => BigFloat })[operator];
+          } as { [key: string]: () => IBigFloat })[operator];
 
           const boolean_return = ({
             "=="() {
