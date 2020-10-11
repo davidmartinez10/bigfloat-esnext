@@ -1,4 +1,4 @@
-[![N|Solid](https://raw.githubusercontent.com/davidmartinez10/bigfloat-esnext/master/bigfloat.jpg)](https://nodesource.com/products/nsolid)
+[![BigFloat](https://raw.githubusercontent.com/davidmartinez10/bigfloat-esnext/master/bigfloat.jpg)](https://github.com/davidmartinez10/bigfloat-esnext)
 
 A library for arbitrary precision decimal floating point arithmetic that can exactly represent all decimal fractions,
 unlike JavaScript's number data type which is 64-bit binary floating point.
@@ -31,7 +31,7 @@ new BigFloat("2").sqrt().toString(); // 1.4142
 evaluate(expression: string, precision?: number): string | boolean
 ```
 >The first argument can be any valid arithmetic or relational expression, including scientific e-notation.
->(Optional) Precision should be a negative integer. Default is -4.
+>Precision should be a negative integer. Default is -4.
 ```typescript
 import { evaluate } from "bigfloat-esnext";
 
