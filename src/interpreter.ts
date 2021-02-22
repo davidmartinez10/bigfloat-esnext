@@ -102,88 +102,86 @@ export function evaluate(source: string, precision = PRECISION): string | boolea
     let last_left_paren: number | undefined;
     let i = 0;
     while (i <= arr.length) {
-      if (typeof last_left_paren === "number") {
-        const { value } = arr[i];
-        if (value === "(") {
-          last_left_paren = i;
-        }
-        if (value === ")") {
-          const start = arr.slice(0, last_left_paren);
-          const term = arr.splice(last_left_paren, i - last_left_paren + 1);
-          const end = arr.slice(last_left_paren, arr.length);
-          return resolve([...start, ...resolve(term), ...end]);
-        }
-        if (arr[i].type === "operator" && arr[i + 1].type !== "paren") {
-          const start = arr.slice(
-            0,
-            arr[i + 2].type === "operator" || arr[i + 2].type === "paren"
-              ? last_left_paren + 1
-              : last_left_paren
-          );
-          const ops = arr.splice(i - 1, 3);
-          const end = arr.slice(
-            arr[i - 1].type === "operator" ||
-              (arr[i + 1] || {}).type === "paren" ||
-              i >= arr.length
-              ? i - 1
-              : i,
-            arr.length
-          );
-          const a = ops[0].value as IBigFloat;
-          const b = ops[2].value as IBigFloat;
-          const operator = ops[1].value as string;
+      const { value } = arr[i];
+      if (value === "(") {
+        last_left_paren = i;
+      }
+      if (value === ")") {
+        const start = arr.slice(0, last_left_paren);
+        const term = arr.splice(last_left_paren, i - last_left_paren + 1);
+        const end = arr.slice(last_left_paren, arr.length);
+        return resolve([...start, ...resolve(term), ...end]);
+      }
+      if (arr[i].type === "operator" && arr[i + 1].type !== "paren") {
+        const start = arr.slice(
+          0,
+          arr[i + 2].type === "operator" || arr[i + 2].type === "paren"
+            ? last_left_paren + 1
+            : last_left_paren
+        );
+        const ops = arr.splice(i - 1, 3);
+        const end = arr.slice(
+          arr[i - 1].type === "operator" ||
+            (arr[i + 1] || {}).type === "paren" ||
+            i >= arr.length
+            ? i - 1
+            : i,
+          arr.length
+        );
+        const a = ops[0].value as IBigFloat;
+        const b = ops[2].value as IBigFloat;
+        const operator = ops[1].value as string;
 
-          const bigfloat_return = ({
-            "+"() {
-              return add(a, b);
-            },
-            "-"() {
-              return sub(a, b);
-            },
-            "*"() {
-              return mul(a, b);
-            },
-            "/"() {
-              return is_zero(b) ? ZERO : div(a, b, precision);
-            },
-            "**"() {
-              return exponentiation(a, b);
-            }
-          } as { [key: string]: () => IBigFloat })[operator];
+        const bigfloat_return = ({
+          "+"() {
+            return add(a, b);
+          },
+          "-"() {
+            return sub(a, b);
+          },
+          "*"() {
+            return mul(a, b);
+          },
+          "/"() {
+            return is_zero(b) ? ZERO : div(a, b, precision);
+          },
+          "**"() {
+            return exponentiation(a, b);
+          }
+        } as { [key: string]: () => IBigFloat })[operator];
 
-          const boolean_return = ({
-            "=="() {
-              return eq(a, b);
-            },
-            "!="() {
-              return !eq(a, b);
-            },
-            "<"() {
-              return lt(a, b);
-            },
-            ">"() {
-              return gt(a, b);
-            },
-            "<="() {
-              return lt(a, b) || eq(a, b);
-            },
-            ">="() {
-              return gt(a, b) || eq(a, b);
-            }
-          } as { [key: string]: () => boolean })[operator];
+        const boolean_return = ({
+          "=="() {
+            return eq(a, b);
+          },
+          "!="() {
+            return !eq(a, b);
+          },
+          "<"() {
+            return lt(a, b);
+          },
+          ">"() {
+            return gt(a, b);
+          },
+          "<="() {
+            return lt(a, b) || eq(a, b);
+          },
+          ">="() {
+            return gt(a, b) || eq(a, b);
+          }
+        } as { [key: string]: () => boolean })[operator];
 
-          const res = bigfloat_return
-            ? {
-              type: "number",
-              value: bigfloat_return()
-            }
-            : {
-              type: "boolean",
-              value: boolean_return()
-            };
+        const res = bigfloat_return
+          ? {
+            type: "number",
+            value: bigfloat_return()
+          }
+          : {
+            type: "boolean",
+            value: boolean_return()
+          };
 
-          return resolve([...start, res, ...end]);
-        }
+        return resolve([...start, res, ...end]);
       }
       i += 1;
     }
