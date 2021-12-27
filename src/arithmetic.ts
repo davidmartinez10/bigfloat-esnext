@@ -1,39 +1,37 @@
 import {
-  BIGINT_ONE,
-  BIGINT_TEN,
   EPSILON,
   ONE,
-  PRECISION,
   TWO,
   ZERO
 } from "./constants.js";
-import { integer, make_big_float, number } from "./constructors.js";
+import { integer, make_big_float, to_number } from "./constructors.js";
+import { PRECISION } from "./options.js";
 import { is_integer, is_negative, is_zero } from "./predicates.js";
 import { eq, gt, lt } from "./relational.js";
-import { IBigFloat } from "./types";
+import type { IBigFloat } from "./types";
 
-export function neg(a: IBigFloat): IBigFloat {
-  return make_big_float(-a.coefficient, a.exponent);
+export function neg(value: IBigFloat): IBigFloat {
+  return make_big_float(value.coefficient * -1n, value.exponent);
 }
 
-export function abs(a: IBigFloat): IBigFloat {
-  return is_negative(a) ? neg(a) : a;
+export function abs(value: IBigFloat): IBigFloat {
+  return is_negative(value) ? neg(value) : value;
 }
 
 function conform_op(op: (a: bigint, b: bigint) => bigint) {
   return function (a: IBigFloat, b: IBigFloat) {
     const differential = a.exponent - b.exponent;
-    return differential === 0
+    return differential === 0n
       ? make_big_float(op(a.coefficient, b.coefficient), a.exponent)
-      : differential > 0
+      : differential > 0n
         ? make_big_float(
-          op(a.coefficient * BIGINT_TEN ** BigInt(differential), b.coefficient),
+          op(a.coefficient * 10n ** differential, b.coefficient),
           b.exponent
         )
         : make_big_float(
           op(
             a.coefficient,
-            b.coefficient * BIGINT_TEN ** BigInt(-differential)
+            b.coefficient * 10n ** -differential
           ),
           a.exponent
         );
@@ -50,25 +48,21 @@ export function mul(multiplicand: IBigFloat, multiplier: IBigFloat): IBigFloat {
   );
 }
 
-export function div(
-  dividend: IBigFloat,
-  divisor: IBigFloat,
-  precision = PRECISION
-): IBigFloat {
-  if (is_zero(dividend) || is_zero(divisor)) {
+export function div(dividend: IBigFloat, divisor: IBigFloat): IBigFloat {
+  if (is_zero(dividend)) {
     return ZERO;
+  }
+
+  if (is_zero(divisor)) {
+    throw RangeError("Division by zero");
   }
 
   let { coefficient, exponent } = dividend;
   exponent -= divisor.exponent;
 
-  if (typeof precision !== "number") {
-    precision = number(precision);
-  }
-
-  if (exponent > precision) {
-    coefficient = coefficient * BIGINT_TEN ** BigInt(exponent - precision);
-    exponent = precision;
+  if (exponent > PRECISION) {
+    coefficient = coefficient * 10n ** exponent - BigInt(PRECISION);
+    exponent = BigInt(PRECISION);
   }
 
   coefficient = coefficient / divisor.coefficient;
@@ -94,10 +88,10 @@ export function exponentiation(base: IBigFloat, exp: IBigFloat): IBigFloat {
     return div(ONE, exponentiation(base, abs(exp)));
   }
 
-  if (exp.exponent === 0) {
+  if (exp.exponent === 0n) {
     let result = base;
     let n = 1;
-    while (n !== number(exp)) {
+    while (n !== to_number(exp)) {
       result = mul(result, base);
       n += 1;
     }
@@ -133,7 +127,7 @@ export function ceil(n: IBigFloat): IBigFloat {
   if (is_integer(n)) {
     return n;
   } else {
-    return make_big_float(integer(n).coefficient + BIGINT_ONE, 0);
+    return make_big_float(integer(n).coefficient + 1n, 0n);
   }
 }
 

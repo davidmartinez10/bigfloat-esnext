@@ -52,7 +52,8 @@ evaluate(`4 >= ${Math.PI}`);           // true
 Valid tokens:
   - Parenthesis: (,)
   - Number: Decimal, integer or scientific e-notation
-  - Operator: Arithmetic +,-,/,\*,\*\* Relational =\=\=,=\=,!==,!=,<,>,<=,>=
+  - Operator: Arithmetic +,-,/,*,** Relational =\=\=,=\=,!==,!=,<,>,<=,>=
+
 ### Change precision
 ```typescript
 import { BigFloat, set_precision } from "bigfloat-esnext";
@@ -61,6 +62,7 @@ new BigFloat(2).sqrt().toString();     // "1.4142"
 set_precision(-10);
 new BigFloat(2).sqrt().toString();     // "1.4142135623"
 ```
+
 ### The bigfloat object
 ```typescript
 interface IBigFloat {
@@ -68,6 +70,7 @@ interface IBigFloat {
   exponent: number;
 }
 ```
+
 Valid bigfloat made from primitives:
 ```typescript
 const bigfloat: IBigFloat {

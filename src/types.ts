@@ -1,10 +1,7 @@
 export interface IBigFloat {
-  coefficient: bigint;
-  exponent: number;
+  readonly coefficient: bigint;
+  readonly exponent: bigint;
 }
 
 export type NumericValue = string | number | IBigFloat | bigint;
 
-export type TokenArray = Array<
-  { type: string; value: string | IBigFloat } | { type: string; value: boolean }
->;

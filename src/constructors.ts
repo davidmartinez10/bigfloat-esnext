@@ -1,175 +1,144 @@
 import { sub } from "./arithmetic.js";
-import { BIGINT_TEN, BIGINT_TEN_MILLION, BIGINT_ZERO, ZERO } from "./constants.js";
+import { ZERO } from "./constants.js";
 import { is_big_float, is_negative, is_zero } from "./predicates.js";
-import { IBigFloat, NumericValue } from "./types";
+import type { IBigFloat, NumericValue } from "./types";
 
+/** Construct a bigfloat object */
 export function make_big_float(
   coefficient: bigint,
-  exponent: number
+  exponent: bigint
 ): IBigFloat {
-  if (coefficient === BIGINT_ZERO) {
+  if (coefficient === 0n) {
     return ZERO;
   }
-  const new_big_float: IBigFloat = Object.create(null);
-  new_big_float.coefficient = coefficient;
-  new_big_float.exponent = exponent;
-  return Object.freeze(new_big_float);
+  return Object.freeze(Object.create(null, <PropertyDescriptorMap>{ coefficient, exponent }));
 }
 
-export function number(a: NumericValue): number {
-  if (typeof a !== "number" && typeof a !== "string") {
-    if (typeof a === "bigint") {
-      return Number(a);
-    } else if (is_big_float(a)) {
-      return a.exponent === 0
-        ? Number(a.coefficient)
-        : Number(a.coefficient) * 10 ** a.exponent;
+/** Discard decimal digits. */
+export function integer(value: IBigFloat): IBigFloat {
+  value = make(value);
+  const { coefficient, exponent } = value;
+  if (exponent === 0n) {
+    return value;
+  }
+
+  if (exponent > 0n) {
+    return make_big_float(coefficient * 10n ** BigInt(exponent), 0n);
+  }
+
+  return make_big_float(coefficient / 10n ** BigInt(-exponent), 0n);
+}
+
+/** Convert strings, numbers and bigints to bigfloat. */
+export function make(value: NumericValue): IBigFloat {
+  if (is_big_float(value)) {
+    return <IBigFloat>value;
+  } else if (typeof value === "bigint") {
+    return make_big_float(value, 0n);
+  } else if (Number.isNaN(value) || [Infinity, -0, null, undefined].includes(<number>value)) {
+    throw RangeError("Cannot convert " + String(value) + " to a BigFloat");
+  } else if (["string", "number"].includes(typeof value)) {
+    if (!Number.isFinite(Number(value))) {
+      throw SyntaxError("Cannot convert " + String(value) + " to a BigFloat");
+    }
+
+    // Capturing groups
+    // [1] int
+    // [2] frac
+    // [3] exp
+    const parts = String(value).match(/^(-?\d+)(?:\.(\d*))?(?:e(-?\d+))?$/);
+    if (parts) {
+      const frac = parts[2] || "";
+      return make_big_float(BigInt(parts[1] + frac), BigInt((Number(parts[3]) || 0) - frac.length));
     }
   }
-  return Number(a);
+  throw TypeError("Cannot convert " + String(value) + " to a BigFloat");
 }
 
-export function normalize(a: IBigFloat): IBigFloat {
-  let { coefficient, exponent } = a;
+/** Convert a bigfloat to number. Use `to_string()` for a precise conversion. */
+export function to_number(value: IBigFloat): number {
+  if (is_big_float(value)) {
+    return Number(value.coefficient * 10n ** value.exponent);
+  } else if (["number", "bigint", "string"].includes(typeof value)) {
+    return Number(value);
+  }
+  return NaN;
+}
 
-  // If the exponent is zero, it is already normal.
-  if (exponent !== 0) {
-    if (exponent > 0) {
-      coefficient = coefficient * BIGINT_TEN ** BigInt(exponent);
-      exponent = 0;
+/** Convert a bigfloat to bigint. Decimal digits are thrown away. */
+export function to_bigint(value: IBigFloat): bigint {
+  return BigInt(to_string(integer(make(value))));
+}
+
+function normalize(value: IBigFloat): IBigFloat {
+  let { coefficient, exponent } = value;
+  if (exponent !== 0n) {
+    if (exponent > 0n) {
+      coefficient *= 10n ** BigInt(exponent);
+      exponent = 0n;
     } else {
-      let quotient;
-      let remainder;
-
-      // tslint:disable-next-line: no-bitwise
-      while (exponent <= -7) {
-        quotient = coefficient / BIGINT_TEN_MILLION;
-        remainder = coefficient % BIGINT_TEN_MILLION;
-        if (remainder !== BIGINT_ZERO) {
+      while (exponent <= -7n) {
+        if (coefficient % 10000000n !== 0n) {
           break;
         }
-        coefficient = quotient;
-        exponent += 7;
+        coefficient /= 10000000n;
+        exponent += 7n;
       }
-      while (exponent < 0) {
-        quotient = coefficient / BIGINT_TEN;
-        remainder = coefficient % BIGINT_TEN;
-        if (remainder !== BIGINT_ZERO) {
+      while (exponent < 0n) {
+        if (coefficient % 10n !== 0n) {
           break;
         }
-        coefficient = quotient;
-        exponent += 1;
+        coefficient /= 10n;
+        exponent += 1n;
       }
     }
   }
   return make_big_float(coefficient, exponent);
 }
 
-export function integer(a: IBigFloat): IBigFloat {
-  // The integer function is like the normalize function except that it throws
-  // away significance. It discards the digits after the decimal point.
-
-  const { coefficient, exponent } = a;
-
-  // If the exponent is zero, it is already an integer.
-
-  if (exponent === 0) {
-    return a;
-  }
-
-  // If the exponent is positive,
-  // multiply the coefficient by 10 ** exponent.
-
-  if (exponent > 0) {
-    return make_big_float(coefficient * BIGINT_TEN ** BigInt(exponent), 0);
-  }
-
-  // If the exponent is negative, divide the coefficient by 10 ** -exponent.
-  // This truncates the unnecessary bits. This might be a zero result.
-
-  return make_big_float(coefficient / BIGINT_TEN ** BigInt(-exponent), 0);
-}
-
-export function fraction(a: IBigFloat): IBigFloat {
-  return sub(a, integer(a));
-}
-
-export function make(a: NumericValue, b?: number | string): IBigFloat {
-  const number_pattern = /^(-?\d+)(?:\.(\d*))?(?:e(-?\d+))?$/;
-
-  // . Capturing groups
-  // .      [1] int
-  // .      [2] frac
-  // .      [3] exp
-  if (typeof a === "bigint") {
-    return make_big_float(a, Number(b) || 0);
-  } else if (typeof a === "string" || typeof a === "number") {
-    a = String(a);
-    if (Number.isSafeInteger(Number(b))) {
-      return make(BigInt(parseInt(a, Number(b))), 0);
-    }
-    const parts = a.match(number_pattern);
-    if (parts) {
-      const frac = parts[2] || "";
-      return make(
-        BigInt(parts[1] + frac),
-        (Number(parts[3]) || 0) - frac.length
-      );
-    }
-  } else if (is_big_float(a)) {
-    return a;
-  }
-  return ZERO;
-}
-
-export function string(a: IBigFloat, radix?: IBigFloat): string | undefined {
-  if (is_zero(a)) {
+/** Convert a bigfloat to string. */
+export function to_string(value: IBigFloat): string {
+  value = normalize(make(value));
+  if (is_zero(value)) {
     return "0";
   }
-  if (radix && is_big_float(radix)) {
-    radix = normalize(radix);
-    return radix && radix.exponent === 0
-      ? integer(a).coefficient.toString(Number(radix.coefficient))
-      : undefined;
-  }
-  a = normalize(a);
-  let s = (
-    is_negative(a)
-      ? -a.coefficient
-      : a.coefficient
-  ).toString();
-  if (a.exponent < 0) {
-    let point = s.length + a.exponent;
+  let s = String(is_negative(value) ? -value.coefficient : value.coefficient);
+  if (value.exponent < 0n) {
+    let point = s.length + Number(value.exponent);
     if (point <= 0) {
       s = "0".repeat(1 - point) + s;
       point = 1;
     }
     s = s.slice(0, point) + "." + s.slice(point);
-  } else if (a.exponent > 0) {
-    s += "0".repeat(a.exponent);
+  } else if (value.exponent > 0n) {
+    s += "0".repeat(Number(value.exponent));
   }
-  if (is_negative(a)) {
+  if (is_negative(value)) {
     s = "-" + s;
   }
   return s;
 }
 
-export function scientific(a: IBigFloat): string {
-  if (is_zero(a)) {
+/** Discard integer part. */
+export function fraction(value: IBigFloat): IBigFloat {
+  return sub(value, integer(value));
+}
+
+/** Convert a bigfloat to scientific e-notation string  */
+export function to_scientific(value: IBigFloat): string {
+  value = normalize(make(value));
+  if (is_zero(value)) {
     return "0";
   }
-  a = normalize(a);
-  let s = String(
-    is_negative(a) ? -a.coefficient : a.coefficient
-  );
-  const e = a.exponent + s.length - 1;
+  let s = String(is_negative(value) ? -value.coefficient : value.coefficient);
+  const e = value.exponent + BigInt(s.length) - 1n;
   if (s.length > 1) {
     s = s.slice(0, 1) + "." + s.slice(1);
   }
-  if (e !== 0) {
-    s += "e" + e;
+  if (e !== 0n) {
+    s += "e" + String(e);
   }
-  if (is_negative(a)) {
+  if (is_negative(value)) {
     s = "-" + s;
   }
   return s;

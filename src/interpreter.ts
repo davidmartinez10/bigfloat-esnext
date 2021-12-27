@@ -1,11 +1,15 @@
 import { add, div, exponentiation, mul, sub } from "./arithmetic.js";
-import { PRECISION, ZERO } from "./constants.js";
-import { make, normalize, string } from "./constructors.js";
-import { is_number, is_zero } from "./predicates.js";
+import { ZERO } from "./constants.js";
+import { make, to_string } from "./constructors.js";
+import { is_zero } from "./predicates.js";
 import { eq, gt, lt } from "./relational.js";
-import { IBigFloat, TokenArray } from "./types";
+import type { IBigFloat } from "./types";
 
-export function evaluate(source: string, precision = PRECISION): string | boolean {
+type TokenArray = Array<
+  { type: string; value: string | IBigFloat } | { type: string; value: boolean }
+>;
+
+export function evaluate(source: string): string | boolean {
   if (typeof source !== "string") {
     throw Error("The first parameter was expected to be a string.");
   }
@@ -69,10 +73,10 @@ export function evaluate(source: string, precision = PRECISION): string | boolea
         type: "operator",
         value: element
       };
-    } else if (is_number(element)) {
+    } else if (Number.isFinite(Number(element))) {
       return {
         type: "number",
-        value: normalize(make(element.replace("+", "")))
+        value: make(element.replace("+", ""))
       };
     }
     throw Error(`Unexpected token "${element}"`);
@@ -144,7 +148,7 @@ export function evaluate(source: string, precision = PRECISION): string | boolea
               return mul(a, b);
             },
             "/"() {
-              return is_zero(b) ? ZERO : div(a, b, precision);
+              return is_zero(b) ? ZERO : div(a, b);
             },
             "**"() {
               return exponentiation(a, b);
@@ -192,7 +196,7 @@ export function evaluate(source: string, precision = PRECISION): string | boolea
   const [result] = resolve(tokens);
 
   if (result.type === "number") {
-    return string(result.value) as string;
+    return to_string(result.value);
   }
   return result.value;
 }
