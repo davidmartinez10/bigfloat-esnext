@@ -10,6 +10,7 @@ import type { IBigFloat, NumericValue } from "./types";
 export class BigFloat implements IBigFloat {
   readonly exponent: bigint;
   readonly coefficient: bigint;
+  // get [Symbol.toStringTag]() { return "BigFloat"; };
   readonly [Symbol.toStringTag]: "BigFloat" = "BigFloat";
   constructor(n: NumericValue) {
     const { exponent, coefficient } = make(n);

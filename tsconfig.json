@@ -5,15 +5,8 @@
     "declaration": true,
     "outDir": "lib/esm",
     "strict": true,
-    "lib": [
-      "esnext"
-    ]
+    "lib": ["esnext"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "lib"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "lib"]
 }
