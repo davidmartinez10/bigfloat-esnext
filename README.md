@@ -76,3 +76,7 @@ const bigfloat: IBigFloat = {
   exponent: -4
 };
 ```
+### Alternative versions
+>[bigfloat](https://jsr.io/@davidmartinez/bigfloat) - JSR · Node, Deno, Bun, browsers · Best for modern setups
+
+>[bigfloat.js](https://www.npmjs.com/package/bigfloat.js) - NPM · for old runtimes · CommonJS
