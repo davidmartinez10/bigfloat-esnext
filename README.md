@@ -14,14 +14,14 @@ This library provides three ways to make bigfloat operations:
 ```typescript
 import { make, string, sqrt } from "bigfloat-esnext";
 
-string(sqrt(make("2")));               // "1.4142"
+string(sqrt(make("2")));               // "1.41421"
 ```
 
 ### Class based
 ```typescript
 import { BigFloat } from "bigfloat-esnext";
 
-new BigFloat("2").sqrt().toString();   // "1.4142"
+new BigFloat("2").sqrt().toString();   // "1.41421"
 ```
 
 ### The evaluate() function
@@ -57,7 +57,7 @@ Valid tokens:
 import { BigFloat, set_precision } from "bigfloat-esnext";
 
 new BigFloat(2).sqrt().toString();     // "1.41421"
-set_precision(-10);
+BigFloat.setPrecision(-10);
 new BigFloat(2).sqrt().toString();     // "1.4142135623"
 ```
 
