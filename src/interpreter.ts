@@ -3,7 +3,15 @@ import {PRECISION, ZERO} from "./constants.ts";
 import {make, normalize, string} from "./constructors.ts";
 import {is_number, is_zero} from "./predicates.ts";
 import {eq, gt, lt} from "./relational.ts";
-import type {IBigFloat, TokenArray} from "./types.ts";
+import type {IBigFloat} from "./types.ts";
+
+type TokenArray = ({
+  type: string;
+  value: string|IBigFloat
+}|{
+  type: string;
+  value: boolean
+})[];
 
 export function evaluate(source: string,
                          precision = PRECISION): string|boolean {
