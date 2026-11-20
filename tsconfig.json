@@ -3,9 +3,12 @@
     "target": "esnext",
     "module": "esnext",
     "declaration": true,
-    "outDir": "lib/esm",
+    "rootDir": "src",
+    "outDir": "lib",
     "strict": true,
-    "lib": ["esnext"]
+    "lib": ["esnext"],
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "lib"]

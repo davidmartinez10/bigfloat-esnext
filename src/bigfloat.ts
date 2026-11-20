@@ -1,36 +1,27 @@
-import { abs, add, ceil, div, exponentiation, floor, mul, neg, sqrt, sub } from "./arithmetic.js";
-import { make, make_big_float, to_string } from "./constructors.js";
-import { evaluate } from "./interpreter.js";
-import { is_integer, is_negative, is_positive, is_zero } from "./predicates.js";
-import { eq, gt, gte, lt, lte } from "./relational.js";
-import { PRECISION, set_precision } from "./options.js";
-import type { IBigFloat, NumericValue } from "./types";
+import {abs, add, ceil, div, exponentiation, floor, modulo, mul, neg, sqrt, sub} from "./arithmetic.ts";
+import {PRECISION, set_precision} from "./constants.ts";
+import {make, make_big_float, string} from "./constructors.ts";
+import {evaluate} from "./interpreter.ts";
+import {is_integer, is_negative, is_positive, is_zero} from "./predicates.ts";
+import {eq, gt, gte, lt, lte} from "./relational.ts";
+import type {IBigFloat, NumericValue} from "./types.ts";
 
-// eslint-disable-next-line no-restricted-syntax
 export class BigFloat implements IBigFloat {
-  readonly exponent: bigint;
+  readonly exponent: number;
   readonly coefficient: bigint;
-  // get [Symbol.toStringTag]() { return "BigFloat"; };
-  readonly [Symbol.toStringTag]: "BigFloat" = "BigFloat";
+  readonly[Symbol.toStringTag] = "BigFloat" as const;
   constructor(n: NumericValue) {
     const { exponent, coefficient } = make(n);
-    this.exponent = exponent;
-    this.coefficient = coefficient;
-    if (!(this instanceof BigFloat)) {
-      return new BigFloat(n);
-    }
+    this.exponent                   = exponent;
+    this.coefficient                = coefficient;
+    if (! (this instanceof BigFloat)) { return new BigFloat(n); }
   }
 
   static get precision(): number { return PRECISION; }
   static set precision(n: number) { set_precision(n); }
   static evaluate = evaluate;
-  static eq = eq;
-  static gt = gt;
-  static lt = lt;
-  static gte = gte;
-  static lte = lte;
 
-  // decimalPlaces(): number { return Number(-this.exponent); } WRONG
+  decimalPlaces(): number { return Number(-this.exponent); } // WRONG
   isInteger(): boolean { return is_integer(this); }
   isNegative(): boolean { return is_negative(this); }
   isPositive(): boolean { return is_positive(this); }
@@ -42,15 +33,44 @@ export class BigFloat implements IBigFloat {
   lessThanOrEqualTo(y: NumericValue): boolean { return lte(this, make(y)); }
   absoluteValue(): BigFloat { return new BigFloat(abs(this)); }
   negated(): BigFloat { return new BigFloat(neg(this)); }
-  sqrt(): BigFloat { return new BigFloat(sqrt(this)); }
-  dividedBy(y: NumericValue): BigFloat { return new BigFloat(div(this, make(y))); }
+  squareRoot(): BigFloat { return new BigFloat(sqrt(this)); }
+  dividedBy(y: NumericValue): BigFloat {
+    return new BigFloat(div(this, make(y)));
+  }
   minus(y: NumericValue): BigFloat { return new BigFloat(sub(this, make(y))); }
   plus(y: NumericValue): BigFloat { return new BigFloat(add(this, make(y))); }
   times(y: NumericValue): BigFloat { return new BigFloat(mul(this, make(y))); }
-  toPower(y: NumericValue): BigFloat { return new BigFloat(exponentiation(this, make(y))); }
+  toPower(y: NumericValue): BigFloat {
+    return new BigFloat(exponentiation(this, make(y)));
+  }
   ceil(): BigFloat { return new BigFloat(ceil(this)); }
   floor(): BigFloat { return new BigFloat(floor(this)); }
+  modulo(y: NumericValue): BigFloat {
+    return new BigFloat(modulo(this, make(y)));
+  }
 
-  toString(): string { return to_string(this); }
-  valueOf(): IBigFloat { return make_big_float(this.coefficient, this.exponent); }
+  toString(): string { return string(this); }
+  valueOf(): IBigFloat {
+    return make_big_float(this.coefficient, this.exponent);
+  }
+
+  // aliases
+  dp    = this.decimalPlaces;
+  isNeg = this.isNegative;
+  eq    = this.equals;
+  gt    = this.greaterThan;
+  gte   = this.greaterThanOrEqualTo;
+  lt    = this.lessThan;
+  lte   = this.lessThanOrEqualTo;
+  isInt = this.isInteger;
+  isPos = this.isPositive;
+  abs   = this.absoluteValue;
+  neg   = this.negated;
+  sqrt  = this.squareRoot;
+  div   = this.dividedBy;
+  sub   = this.minus;
+  add   = this.plus;
+  mul   = this.times;
+  pow   = this.toPower;
+  mod   = this.modulo;
 }

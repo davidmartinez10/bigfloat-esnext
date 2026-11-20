@@ -1,10 +1,8 @@
-export * from "./arithmetic.js";
-export * from "./constructors.js";
-export * from "./predicates.js";
-export * from "./relational.js";
-export * from "./options.js";
-export * from "./interpreter.js";
-
-export { BigFloat } from "./bigfloat.js";
-export type { IBigFloat } from "./types";
-
+export {BigFloat} from "./bigfloat.ts";
+export type {IBigFloat} from "./types.ts";
+export * from "./arithmetic.ts";
+export * from "./constructors.ts";
+export * from "./predicates.ts";
+export * from "./relational.ts";
+export * from "./constants.ts";
+export * from "./interpreter.ts";

@@ -1,6 +1,6 @@
-import { sub } from "./arithmetic.js";
-import { is_negative, is_zero } from "./predicates.js";
-import type { IBigFloat } from "./types";
+import {sub} from "./arithmetic.ts";
+import {is_negative, is_zero} from "./predicates.ts";
+import type {IBigFloat} from "./types.ts";
 
 export function eq(comparahend: IBigFloat, comparator: IBigFloat): boolean {
   return comparahend === comparator || is_zero(sub(comparahend, comparator));
